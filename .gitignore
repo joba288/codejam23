@@ -1,4 +1,5 @@
 # VS
 .vscode/
 
-.exe/
+# Windows Binaries
+*.exe
