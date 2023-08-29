@@ -23,31 +23,41 @@ int main(void)
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
+ 
 
 
-    Texture2D hair = LoadTexture("resources/hair1.png");
-    Texture2D head = LoadTexture("resources/head1.png");
-    Texture2D eyes = LoadTexture("resources/eyes1.png");
-    Texture2D nose = LoadTexture("resources/nose1.png");
-    Texture2D mouth = LoadTexture("resources/mouth1.png");
-    Texture2D body = LoadTexture("resources/body1.png");
-    Texture2D hand = LoadTexture("resources/hand1.png");
-    Texture2D foot = LoadTexture("resources/foot1.png");
+    std::vector<Texture2D> hairArray;
+    std::vector<Texture2D> headArray;
+    std::vector<Texture2D> eyesArray;
+    std::vector<Texture2D> noseArray;
+    std::vector<Texture2D> mouthArray;
+    std::vector<Texture2D> bodyArray;
+    std::vector<Texture2D> handArray;
+    std::vector<Texture2D> footArray;
 
-    std::cout << hair.width << ',' << hair.height << std::endl;
-    std::cout << head.width << ',' << head.height << std::endl;
-    std::cout << eyes.width << ',' << eyes.height << std::endl;
-    std::cout << nose.width << ',' << nose.height << std::endl;
-    std::cout << mouth.width << ',' << mouth.height << std::endl;
-    std::cout << body.width << ',' << body.height << std::endl;
-    std::cout << hand.width << ',' << hand.height << std::endl;
-    std::cout << foot.width << ',' << foot.height << std::endl;
+    hairArray.push_back(LoadTexture("resources/hair1.png"));
+    hairArray.push_back(LoadTexture("resources/hair2.png"));
+
+    headArray.push_back(LoadTexture("resources/head1.png"));
+
+    eyesArray.push_back(LoadTexture("resources/eyes1.png"));
+
+    noseArray.push_back(LoadTexture("resources/nose1.png"));
+
+    mouthArray.push_back(LoadTexture("resources/mouth1.png"));
+
+    bodyArray.push_back(LoadTexture("resources/body1.png"));
+    
+    handArray.push_back(LoadTexture("resources/hand1.png"));
+
+    footArray.push_back(LoadTexture("resources/foot1.png"));
+
         
     std::vector<Person> persons;
     for (int i = 0; i < 20; i++) {
         persons.push_back(Person(
             Vector2{100.f + (float)(i * rand() % 1250), (float)(i * rand() % 1250)},
-            head, hair, eyes, nose, mouth, body, hand, foot,
+            headArray[rand() % headArray.size()], hairArray[rand() % hairArray.size()], eyesArray[rand() % eyesArray.size()], noseArray[rand() % noseArray.size()], mouthArray[rand() % mouthArray.size()], bodyArray[rand() % bodyArray.size()], handArray[rand() % handArray.size()], footArray[rand() % footArray.size()],
             (Color){ rand() % 255, rand() % 255, rand() % 255, 255 },
             (Color){ rand() % 255, rand() % 255, rand() % 255, 255 },
             (Color){ rand() % 255, rand() % 255, rand() % 255, 255 }
@@ -69,10 +79,9 @@ int main(void)
 
             ClearBackground(RAYWHITE);
 
-            for (auto &person : persons) {
-                person.Draw();
-                person.scale = (sin(GetTime() * 3.f) + 1.f) * 0.5f;
-            }
+            for (auto &person : persons) person.Draw();
+                
+
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
