@@ -2,10 +2,12 @@
 #include <vector>
 #include <cmath>
 #include <ctime>
+#include <memory> // har har har
 
 #include "raylib.h"
 
 #include "./Person.h"
+#include "./scene.h"
 
 //------------------------------------------------------------------------------------
 // Program main entry point
@@ -54,25 +56,37 @@ int main(void)
         ));
     }
 
+    SceneManager sm;
+    FooScene foo;
+    BarScene bar;
+    sm.PushScene(&foo);
+    sm.PushScene(&bar);
+    int idx = 0;
+    
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
         // Update
         //----------------------------------------------------------------------------------
 
+        sm.RunScene(GetFrameTime());
+        sm.SwitchScene(++idx % 2);
+
         for (auto &person : persons) person.Update(GetTime());
 
+        if (IsKeyPressed(KEY_SPACE)) OpenURL("https://youtube.com/@joba2888");
 
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
 
-            ClearBackground(RAYWHITE);
+        ClearBackground(RAYWHITE);
 
-            for (auto &person : persons) {
-                person.Draw();
-                person.scale = (sin(GetTime() * 3.f) + 1.f) * 0.5f;
-            }
+        for (auto &person : persons) {
+            person.Draw();
+            person.scale = (sin(GetTime() * 3.f) + 1.f) * 0.5f;
+        }
+        
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
