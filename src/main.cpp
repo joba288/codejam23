@@ -41,8 +41,10 @@ int main(void)
     headArray.push_back(LoadTexture("resources/head1.png"));
 
     eyesArray.push_back(LoadTexture("resources/eyes1.png"));
+    eyesArray.push_back(LoadTexture("resources/eyes2.png"));
 
     noseArray.push_back(LoadTexture("resources/nose1.png"));
+    noseArray.push_back(LoadTexture("resources/nose2.png"));
 
     mouthArray.push_back(LoadTexture("resources/mouth1.png"));
 
@@ -57,7 +59,10 @@ int main(void)
     for (int i = 0; i < 20; i++) {
         persons.push_back(Person(
             Vector2{100.f + (float)(i * rand() % 1250), (float)(i * rand() % 1250)},
-            headArray[rand() % headArray.size()], hairArray[rand() % hairArray.size()], eyesArray[rand() % eyesArray.size()], noseArray[rand() % noseArray.size()], mouthArray[rand() % mouthArray.size()], bodyArray[rand() % bodyArray.size()], handArray[rand() % handArray.size()], footArray[rand() % footArray.size()],
+            headArray[rand() % headArray.size()], hairArray[rand() % hairArray.size()],
+            eyesArray[rand() % eyesArray.size()], noseArray[rand() % noseArray.size()],
+            mouthArray[rand() % mouthArray.size()], bodyArray[rand() % bodyArray.size()],
+            handArray[rand() % handArray.size()], footArray[rand() % footArray.size()],
             (Color){ rand() % 255, rand() % 255, rand() % 255, 255 },
             (Color){ rand() % 255, rand() % 255, rand() % 255, 255 },
             (Color){ rand() % 255, rand() % 255, rand() % 255, 255 }
