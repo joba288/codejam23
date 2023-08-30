@@ -1,5 +1,9 @@
 # VS
 .vscode/
 
+# EMACS!!!
+*~
+\#*\#
+
 # Windows Binaries
 *.exe

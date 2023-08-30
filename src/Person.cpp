@@ -16,9 +16,6 @@ Person::Person(Vector2 _pos, Texture2D head, Texture2D hair, Texture2D eye, Text
         hairColor = cHair;
         shirtColor = cShirt;
         skinColor = cSkin;
-        
-        
-
 }
 
 void Person::Draw(){
@@ -37,15 +34,31 @@ void Person::Draw(){
     //hand
         
     //foot
-    
-    //DrawRectangleLines(pos.x - 50, pos.y - 75, 100, 200, SKYBLUE);
-        
+
+    // -- DEBUG DRAWS --
+    DrawRectangleLinesEx(collRec, 3.f, GREEN);
 }
-void Person::Update(float time) {
-    //update collision rectangle
+
+bool Person::IsMouseOver()
+{
+    return CheckCollisionPointRec(GetMousePosition(), collRec);
+}
+
+void Person::Update(float time, bool hovering) {
+    // Update collision rectangle
     collRec.x = pos.x - collRec.width/2;
-    collRec.y = pos.y - collRec.height/2;
+    collRec.y = pos.y - collRec.height/3;
+
+    // ------------------------------------
+    // Refactored the function a little bit
+    // TODO: Return and clean up rest later
+    // ------------------------------------
+    scale += 0.15f * (1.f - (0.1f * (float)hovering) - scale);
+
+    if (!hovering && !Person::somethingGrabbed) return;
     Vector2 mouse = GetMousePosition();
+    // ------------------------------------
+    
     //drag and drop code
     if (grabbed){          
         pos.x = mouse.x - grabbedOffset.x;
@@ -56,16 +69,13 @@ void Person::Update(float time) {
         }
     }else{
         
-        if(CheckCollisionPointRec(mouse, collRec)){ //if mouse is inside object pick up
+        if(hovering){
             if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && !Person::somethingGrabbed){
                 grabbed = true;
                 Person::somethingGrabbed = true;
                 grabbedOffset = {mouse.x - pos.x, mouse.y - pos.y}; // this is so that the object is in the same pos relative to the mouse when grabbed
                 
             }
-            scale += 0.15*(0.9 - scale);//lerp to .9 when hovering over
-        }else{
-            scale += 0.15*(1 - scale);//lerp back to 1 when not
         }
     }
     
