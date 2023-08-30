@@ -23,6 +23,8 @@ class Person {
         
         static bool somethingGrabbed;
         bool IsMouseOver();
+
+
         
         Person(Vector2 _pos, Texture2D head, Texture2D hair, Texture2D eye, Texture2D nose, Texture2D mouth, Texture2D shirt, Texture2D hand, Texture2D foot, Color cShirt, Color cHair, Color cSkin);
 
