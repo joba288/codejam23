@@ -3,6 +3,7 @@
 #include "./Scene.h"
 #include <vector>
 #include "./Person.h"
+#include "./Randomiser.h"
 
 class MenuScene : public Scene
 {
@@ -20,66 +21,87 @@ class MenuScene : public Scene
     }
 };
 
+class ChooseTargetScene : public Scene
+{
+    public:
+        ChooseTargetScene(SceneManager *sm) : Scene(sm)
+        {
+            srand(time(NULL));
+            sceneManager = sm;
+
+            targetPerson.push_back(r.createRandomPerson(sceneManager->targetSeed, Vector2{1024/2, 768/2}));
+   
+        }
+    private:
+        Randomiser r;
+        std::vector<Person>targetPerson;
+        Scene* nextScene;
+        SceneManager *sceneManager;
+        bool init = true;
+        void Tick(float deltaTime) override
+        {
+
+            if (init){
+                sceneManager->targetSeed = rand() % 100000;
+                targetPerson[0] = (r.createRandomPerson(sceneManager->targetSeed, Vector2{1024/2, 768/2}));
+                init = false;
+            }
+
+            if (IsKeyPressed(KEY_SPACE)) {
+               SwitchScene(2);
+               init = true;
+               
+            }
+
+            BeginDrawing();
+
+            ClearBackground(RAYWHITE);
+
+            targetPerson[0].Draw(); 
+            
+            EndDrawing();
+        }
+};
+
+
 class MainScene : public Scene
 {
 public:
     MainScene(SceneManager *sm) : Scene(sm)
     {
+        sceneManager = sm;
 
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // MAJOR TODO: Make these static ("static"?) arrays within a Randomizer class
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        std::vector<Texture2D> hairArray;
-        std::vector<Texture2D> headArray;
-        std::vector<Texture2D> eyesArray;
-        std::vector<Texture2D> noseArray;
-        std::vector<Texture2D> mouthArray;
-        std::vector<Texture2D> bodyArray;
-        std::vector<Texture2D> handArray;
-        std::vector<Texture2D> footArray;
+        srand(time(NULL));      
 
-        hairArray.push_back(LoadTexture("resources/hair1.png"));
-        hairArray.push_back(LoadTexture("resources/hair2.png"));
 
-        headArray.push_back(LoadTexture("resources/head1.png"));
-
-        eyesArray.push_back(LoadTexture("resources/eyes1.png"));
-        eyesArray.push_back(LoadTexture("resources/eyes2.png"));
-
-        noseArray.push_back(LoadTexture("resources/nose1.png"));
-        noseArray.push_back(LoadTexture("resources/nose2.png"));
-
-        mouthArray.push_back(LoadTexture("resources/mouth1.png"));
-
-        bodyArray.push_back(LoadTexture("resources/body1.png"));
-    
-        handArray.push_back(LoadTexture("resources/hand1.png"));
-
-        footArray.push_back(LoadTexture("resources/foot1.png"));
-
-        for (int i = 0; i < 20; i++) {
-            persons.push_back(Person(
-                Vector2{100.f + (float)(i * rand() % 1250), (float)(i * rand() % 1250)},
-                headArray[rand() % headArray.size()], hairArray[rand() % hairArray.size()],
-                eyesArray[rand() % eyesArray.size()], noseArray[rand() % noseArray.size()],
-                mouthArray[rand() % mouthArray.size()], bodyArray[rand() % bodyArray.size()],
-                handArray[rand() % handArray.size()], footArray[rand() % footArray.size()],
-                (Color){ rand() % 255, rand() % 255, rand() % 255, 255 },
-                (Color){ rand() % 255, rand() % 255, rand() % 255, 255 },
-                (Color){ rand() % 255, rand() % 255, rand() % 255, 255 }
-                ));
-        }
     }
+
+
 private:
 
     // Defining our scene-specific members
+    Randomiser r;
     std::vector<Person> persons;
     Person *m_lastHovered = nullptr;
+    SceneManager *sceneManager;
+    bool init = true;
     void Tick(float deltaTime) override
     {
+        // -- initialise only once (so that restarting it possible)
+        if (init)
+        {
+            persons = createCrowd(20, r); // idk how bad on memory this will be but its once a scene so
+
+            // -- create target person
+            persons.push_back(r.createRandomPerson(sceneManager->targetSeed, Vector2{(float)(rand() % 1000), (float)(rand() % 1000)}));
+
+            init = false;
+        }
+        // ----------------------------------------------------------
+
         m_lastHovered = nullptr;
 
-        // -- Our Layering Problems are Over --
+        // -- Our Layering Problems are Over -- (yay !!)
         for (auto &person : persons) {
             // Get topmost Person we are hovering over
             if (person.IsMouseOver()) m_lastHovered = &person;
@@ -92,7 +114,9 @@ private:
         }
         // ------------------------------------
 
-        if (IsKeyPressed(KEY_SPACE)) OpenURL("https://youtube.com/@joba2888");
+        if (IsKeyPressed(KEY_SPACE)){ SwitchScene(1); init = true; }            // -- go back to choose target scene            
+        if (IsKeyPressed(KEY_R)) init = true;                                   // -- restart scene
+
 
         BeginDrawing();
 
@@ -101,7 +125,18 @@ private:
         for (auto &person : persons) {
             person.Draw();
         }
-
+        
         EndDrawing();
+    }
+
+    std::vector<Person> createCrowd(int amount, Randomiser r){
+        std::vector<Person> persons;
+
+        for (int i = 0; i < amount; i++) {         
+            persons.push_back(r.createRandomPerson(rand() % 100000, Vector2{(float)(rand() % 1000), (float)(rand() % 1000)}));
+        }
+        
+        return persons;
+
     }
 };
