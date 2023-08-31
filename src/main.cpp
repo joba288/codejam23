@@ -28,8 +28,10 @@ int main(void)
     // -------------------------------------------------------------------------------
     SceneManager sm;
     MenuScene menu(&sm);
+    ChooseTargetScene chooseTargetScene(&sm);
     MainScene main(&sm);
     sm.PushScene(&menu);
+    sm.PushScene(&chooseTargetScene);
     sm.PushScene(&main);
 
     
