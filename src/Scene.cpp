@@ -22,7 +22,6 @@ void Scene::Tick(float deltaTime)
 SceneManager::SceneManager()
 {
     m_sceneIndex = -1; // No scenes have been added
-    
 }
 
 void SceneManager::PushScene(Scene *scene)
@@ -58,13 +57,4 @@ void SceneManager::RunScene(float deltaTime)
     }
 
     m_scenes[m_sceneIndex]->Tick(deltaTime);
-}
-
-
-Scene* SceneManager::GetNextScene()
-{
-    if ((size_t)m_sceneIndex < m_scenes.size()) {
-        return SceneManager::m_scenes[m_sceneIndex + 1];
-    }
-
 }

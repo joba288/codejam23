@@ -28,9 +28,7 @@ class ChooseTargetScene : public Scene
         {
             srand(time(NULL));
             sceneManager = sm;
-
-            targetPerson.push_back(r.createRandomPerson(sceneManager->targetSeed, Vector2{1024/2, 768/2}));
-   
+            targetPerson.push_back(Person(Vector2{1024/2, 768/2}));
         }
     private:
         Randomiser r;
@@ -43,14 +41,13 @@ class ChooseTargetScene : public Scene
 
             if (init){
                 sceneManager->targetSeed = rand() % 100000;
-                targetPerson[0] = (r.createRandomPerson(sceneManager->targetSeed, Vector2{1024/2, 768/2}));
+                targetPerson[0] = Person(Vector2{1024/2, 768/2});
                 init = false;
             }
 
             if (IsKeyPressed(KEY_SPACE)) {
                SwitchScene(2);
                init = true;
-               
             }
 
             BeginDrawing();
@@ -93,7 +90,7 @@ private:
             persons = createCrowd(20, r); // idk how bad on memory this will be but its once a scene so
 
             // -- create target person
-            persons.push_back(r.createRandomPerson(sceneManager->targetSeed, Vector2{(float)(rand() % 1000), (float)(rand() % 1000)}));
+            persons.push_back(Person(Vector2{(float)(rand() % 1000), (float)(rand() % 1000)}));
 
             init = false;
         }
@@ -133,10 +130,9 @@ private:
         std::vector<Person> persons;
 
         for (int i = 0; i < amount; i++) {         
-            persons.push_back(r.createRandomPerson(rand() % 100000, Vector2{(float)(rand() % 1000), (float)(rand() % 1000)}));
+            persons.push_back(Person(Vector2{(float)(rand() % 1000), (float)(rand() % 1000)}));
         }
         
         return persons;
-
     }
 };

@@ -41,17 +41,31 @@ void Randomiser::LoadTextures()
     Randomiser::cSkinArray.push_back(RAYWHITE);
 }
 
-Person Randomiser::createRandomPerson(int seed, Vector2 pos)
+// Person Randomiser::CreateRandomPerson(int seed, Vector2 pos)
+// {
+//     srand(seed); // rand()^2 LOL
+//     return Person(
+//         pos,
+//         headArray[rand() % headArray.size()], hairArray[rand() % hairArray.size()],
+//         eyesArray[rand() % eyesArray.size()], noseArray[rand() % noseArray.size()],
+//         mouthArray[rand() % mouthArray.size()], bodyArray[rand() % bodyArray.size()],
+//         handArray[rand() % handArray.size()], footArray[rand() % footArray.size()],
+//         (Color){ rand() % 255, rand() % 255, rand() % 255, 255 },
+//         cHairArray[rand() % cHairArray.size()],
+//         cSkinArray[rand() % cSkinArray.size()]
+//         );
+// }
+
+PersonGraphics Randomiser::CreateRandomPerson()
 {
-    srand(seed);
-    return Person(
-        pos,
+    PersonGraphics pg {
         headArray[rand() % headArray.size()], hairArray[rand() % hairArray.size()],
         eyesArray[rand() % eyesArray.size()], noseArray[rand() % noseArray.size()],
         mouthArray[rand() % mouthArray.size()], bodyArray[rand() % bodyArray.size()],
         handArray[rand() % handArray.size()], footArray[rand() % footArray.size()],
-        (Color){ rand() % 255, rand() % 255, rand() % 255, 255 },
         cHairArray[rand() % cHairArray.size()],
+        (Color){ rand() % 255, rand() % 255, rand() % 255, 255 },
         cSkinArray[rand() % cSkinArray.size()]
-        );
+    };
+    return pg;
 }

@@ -15,8 +15,6 @@ protected:
 public:
     explicit Scene(SceneManager *sm);
     virtual void Tick(float deltaTime);
-
-    
 };
 
 class SceneManager
@@ -29,6 +27,5 @@ class SceneManager
     void PushScene(Scene *scene);
     void SwitchScene(int index);
     void RunScene(float deltaTime);
-    Scene* GetNextScene();
     int targetSeed;
 };

@@ -2,38 +2,55 @@
 
 bool Person::somethingGrabbed = false;
 
-Person::Person(Vector2 _pos, Texture2D head, Texture2D hair, Texture2D eye, Texture2D nose, Texture2D mouth, Texture2D shirt, Texture2D hand, Texture2D foot, Color cShirt, Color cHair, Color cSkin){
-        pos = _pos;
-        headTex = head;
-        hairTex = hair;
-        eyeTex = eye;
-        noseTex = nose;
-        mouthTex = mouth;
-        handTex = hand;
-        footTex = foot;
-        shirtTex = shirt;
+// Person::Person(Vector2 _pos, Texture2D head, Texture2D hair, Texture2D eye, Texture2D nose, Texture2D mouth, Texture2D shirt, Texture2D hand, Texture2D foot, Color cShirt, Color cHair, Color cSkin){
+//         pos = _pos;
+//         headTex = head;
+//         hairTex = hair;
+//         eyeTex = eye;
+//         noseTex = nose;
+//         mouthTex = mouth;
+//         handTex = hand;
+//         footTex = foot;
+//         shirtTex = shirt;
+// 
+//         hairColor = cHair;
+//         shirtColor = cShirt;
+//         skinColor = cSkin;
+// }
 
-        hairColor = cHair;
-        shirtColor = cShirt;
-        skinColor = cSkin;
+Person::Person(Vector2 _pos)
+{
+    pos = _pos;
+    this->graphics = Randomiser::CreateRandomPerson();
 }
+
+Person::Person(Vector2 _pos, PersonGraphics fixed)
+{
+    pos = _pos;
+    this->graphics = fixed;
+}
+
 
 void Person::Draw(){
     //shirt
-    DrawTextureEx(shirtTex, Vector2{pos.x - (shirtTex.width/2 * scale) , pos.y - ((shirtTex.height/2 - 100.f)* scale) }, rotation, scale, shirtColor);
+    DrawTextureEx(graphics.shirtTex, Vector2{pos.x - (graphics.shirtTex.width/2 * scale) , pos.y - ((graphics.shirtTex.height/2 - 100.f)* scale) }, rotation, scale, graphics.shirtColor);
     //draw head
-    DrawTextureEx(headTex, Vector2{pos.x - (headTex.width/2 * scale), pos.y - ((headTex.height/2 - 2.5f)* scale)}, rotation, scale, skinColor);
+    DrawTextureEx(graphics.headTex, Vector2{pos.x - (graphics.headTex.width/2 * scale), pos.y - ((graphics.headTex.height/2 - 2.5f)* scale)}, rotation, scale, graphics.skinColor);
     //draw mouth
-    DrawTextureEx(mouthTex, Vector2{pos.x - (mouthTex.width/2) * scale, pos.y - (mouthTex.height/2 - 40.f)* scale}, rotation, scale, skinColor);
+    DrawTextureEx(graphics.mouthTex, Vector2{pos.x - (graphics.mouthTex.width/2) * scale, pos.y - (graphics.mouthTex.height/2 - 40.f)* scale}, rotation, scale, graphics.skinColor);
     //nose
-    DrawTextureEx(noseTex, Vector2{pos.x - (noseTex.width/2) * scale, pos.y - (noseTex.height/2 - 5.f)* scale}, rotation, scale, skinColor);
+    DrawTextureEx(graphics.noseTex, Vector2{pos.x - (graphics.noseTex.width/2) * scale, pos.y - (graphics.noseTex.height/2 - 5.f)* scale}, rotation, scale, graphics.skinColor);
     //eyes
-    DrawTextureEx(eyeTex, Vector2{pos.x - (eyeTex.width/2) * scale, pos.y - (eyeTex.height/2 + 25.f)* scale}, rotation, scale, WHITE);
+    DrawTextureEx(graphics.eyeTex, Vector2{pos.x - (graphics.eyeTex.width/2) * scale, pos.y - (graphics.eyeTex.height/2 + 25.f)* scale}, rotation, scale, WHITE);
     //hair
-    DrawTextureEx(hairTex, Vector2{pos.x - (hairTex.width/2) * scale, pos.y - (eyeTex.height/2 + 65.f)* scale}, rotation, scale, hairColor);
+    DrawTextureEx(graphics.hairTex, Vector2{pos.x - (graphics.hairTex.width/2) * scale, pos.y - (graphics.eyeTex.height/2 + 65.f)* scale}, rotation, scale, graphics.hairColor);
     //hand
         
     //foot
+
+    // -- NEW DRAWING --
+
+    
 
     // -- DEBUG DRAWS --
     DrawRectangleLinesEx(collRec, 3.f, GREEN);
