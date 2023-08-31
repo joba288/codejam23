@@ -44,16 +44,11 @@ void Person::Draw(){
     DrawTextureEx(graphics.eyeTex, Vector2{pos.x - (graphics.eyeTex.width/2) * scale, pos.y - (graphics.eyeTex.height/2 + 25.f)* scale}, rotation, scale, WHITE);
     //hair
     DrawTextureEx(graphics.hairTex, Vector2{pos.x - (graphics.hairTex.width/2) * scale, pos.y - (graphics.eyeTex.height/2 + 65.f)* scale}, rotation, scale, graphics.hairColor);
-    //hand
-        
-    //foot
+}
 
-    // -- NEW DRAWING --
-
-    
-
-    // -- DEBUG DRAWS --
-    DrawRectangleLinesEx(collRec, 3.f, GREEN);
+void Person::DrawDebug()
+{
+    DrawRectangleLinesEx(collRec, 8.f, GREEN);
 }
 
 bool Person::IsMouseOver()

@@ -2,6 +2,9 @@
 
 // -- Scene --
 
+void Scene::NextScene() { m_manager->NextScene(); }
+void Scene::PreviousScene() { m_manager->PreviousScene(); }
+
 void Scene::SwitchScene(int index)
 {
     m_manager->SwitchScene(index);
@@ -11,6 +14,12 @@ Scene::Scene(SceneManager *sm)
 {
     m_manager = sm;
 }
+
+void Scene::Init()
+{
+    (void)0;
+}
+
 void Scene::Tick(float deltaTime)
 {
     (void) deltaTime;
@@ -26,8 +35,24 @@ SceneManager::SceneManager()
 
 void SceneManager::PushScene(Scene *scene)
 {
-    if (m_sceneIndex < 0) m_sceneIndex = 0;
+    // Uninitialized and un-pushed first scene must run Init()
+    if (m_sceneIndex < 0) {
+        m_sceneIndex = 0;
+        scene->Init();
+    }
     m_scenes.push_back(scene);
+}
+
+void SceneManager::PreviousScene()
+{
+    if (--m_sceneIndex < 0) m_sceneIndex = m_scenes.size(); // Wrap around to big number
+    SwitchScene(m_sceneIndex);
+}
+
+void SceneManager::NextScene()
+{
+    m_sceneIndex++;
+    SwitchScene(m_sceneIndex % m_scenes.size()); // Wrap around back to 0 if over size
 }
 
 void SceneManager::SwitchScene(int index)
@@ -42,6 +67,7 @@ void SceneManager::SwitchScene(int index)
     }
 
     m_sceneIndex = index;
+    m_scenes[m_sceneIndex]->Init();
 }
 
 void SceneManager::RunScene(float deltaTime)

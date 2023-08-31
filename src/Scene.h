@@ -12,8 +12,11 @@ private:
     SceneManager *m_manager;
 protected:
     void SwitchScene(int index);
+    void PreviousScene();
+    void NextScene();
 public:
     explicit Scene(SceneManager *sm);
+    virtual void Init();
     virtual void Tick(float deltaTime);
 };
 
@@ -25,6 +28,8 @@ class SceneManager
  public:
     SceneManager();
     void PushScene(Scene *scene);
+    void PreviousScene();
+    void NextScene();
     void SwitchScene(int index);
     void RunScene(float deltaTime);
     int targetSeed;

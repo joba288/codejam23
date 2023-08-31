@@ -16,6 +16,11 @@ int main(void)
     // -------------------------------------------------------------------------------    
     // Initialization
     // -------------------------------------------------------------------------------
+
+    // TODO:
+    // - [ ] Group static window information into small structure
+    // - [ ] Un-hard-code all of this information accordingly
+    // ...after this, there should be no problem adjusting resolution
     constexpr int screenWidth = 1080;
     constexpr int screenHeight = 768;
 
@@ -32,9 +37,7 @@ int main(void)
     MainScene main(&sm);
     sm.PushScene(&menu);
     sm.PushScene(&chooseTargetScene);
-    sm.PushScene(&main);
-
-    
+    sm.PushScene(&main);    
 
     // -------------------------------------------------------------------------------
     // Main game loop

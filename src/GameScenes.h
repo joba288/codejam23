@@ -7,7 +7,7 @@
 
 class MenuScene : public Scene
 {
- public:
+public:
     MenuScene(SceneManager *sm) : Scene(sm) {}
     void Tick(float deltaTime) override
     {
@@ -23,79 +23,87 @@ class MenuScene : public Scene
 
 class ChooseTargetScene : public Scene
 {
-    public:
-        ChooseTargetScene(SceneManager *sm) : Scene(sm)
-        {
-            srand(time(NULL));
-            sceneManager = sm;
-            targetPerson.push_back(Person(Vector2{1024/2, 768/2}));
-        }
-    private:
-        Randomiser r;
-        std::vector<Person>targetPerson;
-        Scene* nextScene;
-        SceneManager *sceneManager;
-        bool init = true;
-        void Tick(float deltaTime) override
-        {
+public:
+    inline static PersonGraphics target;
+    ChooseTargetScene(SceneManager *sm) : Scene(sm)
+    {
+        targetPerson.push_back(Person(Vector2{1024/2, 768/2}));
+    }
+private:
+    Randomiser r;
+    // I'm only keeping this so that we can have multiple sometime
+    // and I believe you were thinking the same as well
+    std::vector<Person>targetPerson;
 
-            if (init){
-                sceneManager->targetSeed = rand() % 100000;
-                targetPerson[0] = Person(Vector2{1024/2, 768/2});
-                init = false;
-            }
+    float maxStudyTime;
+    float timeRemaining;
 
-            if (IsKeyPressed(KEY_SPACE)) {
-               SwitchScene(2);
-               init = true;
-            }
+    void Done()
+    {
+        if (maxStudyTime > 1.f) maxStudyTime -= 0.1f;
+        else maxStudyTime = 1.f;
+        NextScene();
+    }
 
-            BeginDrawing();
+    void Init() override
+    {
+        timeRemaining = maxStudyTime;
+        timeRemaining = 5.0f;
+        maxStudyTime = 5.0f;
 
-            ClearBackground(RAYWHITE);
+        PersonGraphics targetGraphics = Randomiser::CreateRandomPerson();
+        ChooseTargetScene::target = targetGraphics;
+        targetPerson[0] = Person(Vector2{1024/2, 768/2}, targetGraphics);
+    }
 
-            targetPerson[0].Draw(); 
-            
-            EndDrawing();
-        }
+    void Tick(float deltaTime) override
+    {
+        if (timeRemaining <= 0.f || IsKeyPressed(KEY_SPACE)) Done();
+        
+        BeginDrawing();
+
+        ClearBackground(RAYWHITE);
+
+        targetPerson[0].Draw();
+        DrawText(TextFormat("Remaining: %.2f", timeRemaining), 10, 10, 40, RED);
+
+        EndDrawing();
+
+        timeRemaining -= deltaTime; // GetFrameTime() also accessible
+    }
 };
-
 
 class MainScene : public Scene
 {
 public:
-    MainScene(SceneManager *sm) : Scene(sm)
-    {
-        sceneManager = sm;
-
-        srand(time(NULL));      
-
-
-    }
-
-
+    MainScene(SceneManager *sm) : Scene(sm) {}
 private:
 
-    // Defining our scene-specific members
-    Randomiser r;
     std::vector<Person> persons;
     Person *m_lastHovered = nullptr;
-    SceneManager *sceneManager;
-    bool init = true;
+
+    float m_maxTime = 20.f;
+    float m_timer = m_maxTime;
+
+    int crowdNumber = 20;
+    int targetIndex;
+    void Init() override
+    {
+        Person::somethingGrabbed = false;
+        m_timer = m_maxTime;
+
+        // -- Generate the crowd --
+        persons = createCrowd(crowdNumber);
+        
+        // -- Create target Person --
+        // TODO: Wasteful approach, please clean up, I'm sick and tired
+        // i.e. we're resetting one when we can just set it in the first place
+        targetIndex = rand() % crowdNumber;
+        persons[targetIndex] = Person(Vector2{(float)(75 + (rand() % 930)), (float)(150 + (rand() % 300))}, ChooseTargetScene::target);
+    }
+
     void Tick(float deltaTime) override
     {
-        // -- initialise only once (so that restarting it possible)
-        if (init)
-        {
-            persons = createCrowd(20, r); // idk how bad on memory this will be but its once a scene so
-
-            // -- create target person
-            persons.push_back(Person(Vector2{(float)(rand() % 1000), (float)(rand() % 1000)}));
-
-            init = false;
-        }
-        // ----------------------------------------------------------
-
         m_lastHovered = nullptr;
 
         // -- Our Layering Problems are Over -- (yay !!)
@@ -111,26 +119,35 @@ private:
         }
         // ------------------------------------
 
-        if (IsKeyPressed(KEY_SPACE)){ SwitchScene(1); init = true; }            // -- go back to choose target scene            
-        if (IsKeyPressed(KEY_R)) init = true;                                   // -- restart scene
-
+        if (IsKeyPressed(KEY_SPACE)){ PreviousScene(); } // Regenerate target
+        if (IsKeyPressed(KEY_R)) Init(); // Regenerate crowd
 
         BeginDrawing();
 
         ClearBackground(RAYWHITE);
-        std::cout << persons.size() << std::endl;
+        // std::cout << persons.size() << std::endl;
         for (auto &person : persons) {
             person.Draw();
         }
-        
+
+        // If target in crowd, `crowdNumber - 1` please
+        persons[targetIndex].DrawDebug();
+
+        DrawText(TextFormat("Remaining: %.2f", m_timer), 10, 10, 40, RED);
+        DrawFPS(20, 20);
+
         EndDrawing();
+
+        // Timer things
+        m_timer -= deltaTime;
+        if (m_timer <= 0.f) { SwitchScene(0); }
     }
 
-    std::vector<Person> createCrowd(int amount, Randomiser r){
+    std::vector<Person> createCrowd(int amount){
         std::vector<Person> persons;
 
         for (int i = 0; i < amount; i++) {         
-            persons.push_back(Person(Vector2{(float)(rand() % 1000), (float)(rand() % 1000)}));
+            persons.push_back(Person(Vector2{(float)(75 + (rand() % 930)), (float)(150 + (rand() % 300))}));
         }
         
         return persons;

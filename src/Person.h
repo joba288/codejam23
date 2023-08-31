@@ -31,5 +31,6 @@ public:
     Person(Vector2 _pos, PersonGraphics fixed); // Fixed
 
     void Draw();
+    void DrawDebug();
     void Update(float time, bool hovering);
 };
