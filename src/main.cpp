@@ -13,6 +13,7 @@
 
 int main(void)
 {
+    
     // -------------------------------------------------------------------------------    
     // Initialization
     // -------------------------------------------------------------------------------
@@ -25,6 +26,7 @@ int main(void)
     constexpr int screenHeight = 768;
 
     InitWindow(screenWidth, screenHeight, "Memory");
+    InitAudioDevice();
     SetTargetFPS(60);
     srand(time(NULL));
 
@@ -35,7 +37,10 @@ int main(void)
     Person::dissolveShader = LoadShader("resources/shaders/dissolve.vs", "resources/shaders/dissolve.fs");
     Person::dissolveTimeLoc = GetShaderLocation(Person::dissolveShader, "dissolveTime");
 
-    // -- really could do with a shader manager but its not worth it at this point in the project  
+    // -- really could do with a shader manager but its not worth it at this point in the project
+
+    Sound dissolveSound = LoadSound("resources/sounds/dissolve.wav");
+    Person::dissolveSound = &dissolveSound;
 
     // -------------------------------------------------------------------------------
     // Scene management
@@ -46,15 +51,13 @@ int main(void)
     MainScene main(&sm);
     sm.PushScene(&menu);
     sm.PushScene(&chooseTargetScene);
-    sm.PushScene(&main);    
+    sm.PushScene(&main);
 
     // -------------------------------------------------------------------------------
     // Main game loop
     // -------------------------------------------------------------------------------
     while (!WindowShouldClose())
     {
-        
-
         sm.RunScene(GetFrameTime());
     }
 

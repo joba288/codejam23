@@ -4,6 +4,7 @@
 #include <vector>
 #include "./Person.h"
 #include "./Randomiser.h"
+#include "./Bin.h"
 
 class MenuScene : public Scene
 {
@@ -76,9 +77,17 @@ private:
 class MainScene : public Scene
 {
 public:
-    MainScene(SceneManager *sm) : Scene(sm) {}
+    // TODO maybe move everything to static members of each class
+    MainScene(SceneManager *sm)
+        : Scene(sm),
+          bin(Bin(LoadTexture("resources/bin_closed.png"), LoadTexture( "resources/bin_open.png")))
+    {
+        bin.rect.x = 25.f;
+        bin.rect.y = 750 - bin.rect.height;
+    }
 private:
 
+    Bin bin;
     std::vector<Person> persons;
     Person *m_lastHovered = nullptr;
 
@@ -100,7 +109,7 @@ private:
         // TODO: Wasteful approach, please clean up, I'm sick and tired
         // i.e. we're resetting one when we can just set it in the first place
         targetIndex = rand() % crowdNumber;
-        persons[targetIndex] = Person(Vector2{(float)(75 + (rand() % 930)), (float)(150 + (rand() % 300))}, ChooseTargetScene::target);
+        persons[targetIndex] = Person(Vector2{(float)(75 + (rand() % 930)), (float)(150 + (rand() % 300))}, ChooseTargetScene::target, true);
     }
 
     void Tick(float deltaTime) override
@@ -126,11 +135,13 @@ private:
         BeginDrawing();
         ClearBackground(RAYWHITE);
         // std::cout << persons.size() << std::endl;
+        bin.Draw();
         for (auto &person : persons) {
             person.Draw();
         }
         // If target in crowd, `crowdNumber - 1` please
         persons[targetIndex].DrawDebug();
+
 
         DrawText(TextFormat("Remaining: %.2f", m_timer), 10, 10, 40, RED);
         DrawFPS(20, 20);

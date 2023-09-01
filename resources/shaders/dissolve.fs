@@ -85,14 +85,16 @@ void main()
     float t = dissolveTime;
     vec4 clrBG = vec4(0.0);
     float edge_width_start = 0.5;
-    float edge_width_end = 0.05;
+    float edge_width_end = 0.15;
     float edge_width = mix(edge_width_start, edge_width_end, smoothstep(0., 1., t));
     float myAlpha = mix(0. - edge_width, 1., t); 
     vec2 uv_mask = fragTexCoord.xy;
-    vec4 alphaTex = 0.2 * vec4(1., 1., 1., 1.) * perlin_noise(fragTexCoord.xy * vec2(2., 2.)) + 0.6;
+    vec4 alphaTex = 0.2 * vec4(1., 1., 1., 1.) * perlin_noise(fragTexCoord.xy * vec2(4., 4.)) + 0.6;
     float a = step(alphaTex.r, myAlpha);
     float edge = smoothstep(alphaTex.r - edge_width, alphaTex.r, myAlpha);
-    vec4 edgeColor = vec4(1., 0.3, 0.0, 1.0);
+
+    // vec4 edgeColor = vec4(1., 0.3, 0.0, 1.0);
+    vec4 edgeColor = vec4(0.0, 0.8, 1.0, 1.0);
      if (texelColor.a == 0.0)
          edgeColor = vec4(0.0);
     edgeColor *= edge;
@@ -102,6 +104,4 @@ void main()
 
     // NOTE: Implement here your fragment shader code
     finalColor = mix(texelColor, clrBG, a);
-
-    
 }

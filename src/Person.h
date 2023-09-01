@@ -7,7 +7,7 @@
 
 class Person {
 private:
-        
+    
 public:
 
     Vector2 pos;
@@ -18,6 +18,7 @@ public:
 
     float scale = 1.0f;
     float rotation = 0.f;
+    bool isTarget = false;
 
     Rectangle collRec = Rectangle{pos.x, pos.y, 100.f, 225.f};
 
@@ -28,15 +29,14 @@ public:
 
     static Shader dissolveShader;
     static int dissolveTimeLoc;
-    float dissolveTime = 0.6f;
-
-
+    float dissolveTime = 0.4f;
+    inline static Sound *dissolveSound = nullptr;
 
     static bool somethingGrabbed;
     bool IsMouseOver();
         
     Person(Vector2 _pos); // Random
-    Person(Vector2 _pos, PersonGraphics fixed); // Fixed
+    Person(Vector2 _pos, PersonGraphics fixed, bool target = false); // Fixed
 
     void Draw();
     void DrawDebug();

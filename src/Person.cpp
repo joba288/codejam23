@@ -18,12 +18,12 @@ Person::Person(Vector2 _pos)
     this->graphics = Randomiser::CreateRandomPerson();
 }
 
-Person::Person(Vector2 _pos, PersonGraphics fixed)
+Person::Person(Vector2 _pos, PersonGraphics fixed, bool target)
 {
     pos = _pos;
     this->graphics = fixed;
+    this->isTarget = target;
 }
-
 
 void Person::Draw(){
 
@@ -82,9 +82,10 @@ void Person::Update(float time, bool hovering) {
             Person::somethingGrabbed = false;
         }
 
-        if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && !beingDestroyed)
+        if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && isTarget && !beingDestroyed)
         {
             beingDestroyed = true;
+            if (dissolveSound) PlaySound(*dissolveSound);
         }
     }else{
         
