@@ -1,22 +1,16 @@
 #include "./Person.h"
 
+
+// -------------------------------------------------------------------------------
+// Globals
+// -------------------------------------------------------------------------------
+
 bool Person::somethingGrabbed = false;
 
-// Person::Person(Vector2 _pos, Texture2D head, Texture2D hair, Texture2D eye, Texture2D nose, Texture2D mouth, Texture2D shirt, Texture2D hand, Texture2D foot, Color cShirt, Color cHair, Color cSkin){
-//         pos = _pos;
-//         headTex = head;
-//         hairTex = hair;
-//         eyeTex = eye;
-//         noseTex = nose;
-//         mouthTex = mouth;
-//         handTex = hand;
-//         footTex = foot;
-//         shirtTex = shirt;
-// 
-//         hairColor = cHair;
-//         shirtColor = cShirt;
-//         skinColor = cSkin;
-// }
+Shader Person::dissolveShader;
+int Person::dissolveTimeLoc;
+
+// -------------------------------------------------------------------------------
 
 Person::Person(Vector2 _pos)
 {
@@ -32,18 +26,23 @@ Person::Person(Vector2 _pos, PersonGraphics fixed)
 
 
 void Person::Draw(){
-    //shirt
+
+    if (beingDestroyed)
+    {       
+        BeginShaderMode(Person::dissolveShader);
+        dissolveTime += 0.01f;
+        SetShaderValue(Person::dissolveShader, Person::dissolveTimeLoc, &(dissolveTime), SHADER_UNIFORM_FLOAT); 
+    }
+
+    
     DrawTextureEx(graphics.shirtTex, Vector2{pos.x - (graphics.shirtTex.width/2 * scale) , pos.y - ((graphics.shirtTex.height/2 - 100.f)* scale) }, rotation, scale, graphics.shirtColor);
-    //draw head
     DrawTextureEx(graphics.headTex, Vector2{pos.x - (graphics.headTex.width/2 * scale), pos.y - ((graphics.headTex.height/2 - 2.5f)* scale)}, rotation, scale, graphics.skinColor);
-    //draw mouth
     DrawTextureEx(graphics.mouthTex, Vector2{pos.x - (graphics.mouthTex.width/2) * scale, pos.y - (graphics.mouthTex.height/2 - 40.f)* scale}, rotation, scale, graphics.skinColor);
-    //nose
     DrawTextureEx(graphics.noseTex, Vector2{pos.x - (graphics.noseTex.width/2) * scale, pos.y - (graphics.noseTex.height/2 - 5.f)* scale}, rotation, scale, graphics.skinColor);
-    //eyes
     DrawTextureEx(graphics.eyeTex, Vector2{pos.x - (graphics.eyeTex.width/2) * scale, pos.y - (graphics.eyeTex.height/2 + 25.f)* scale}, rotation, scale, WHITE);
-    //hair
     DrawTextureEx(graphics.hairTex, Vector2{pos.x - (graphics.hairTex.width/2) * scale, pos.y - (graphics.eyeTex.height/2 + 65.f)* scale}, rotation, scale, graphics.hairColor);
+
+    EndShaderMode();
 }
 
 void Person::DrawDebug()
@@ -57,6 +56,7 @@ bool Person::IsMouseOver()
 }
 
 void Person::Update(float time, bool hovering) {
+
     // Update collision rectangle
     collRec.x = pos.x - collRec.width/2;
     collRec.y = pos.y - collRec.height/3;
@@ -72,17 +72,26 @@ void Person::Update(float time, bool hovering) {
     // ------------------------------------
     
     //drag and drop code
-    if (grabbed){          
+    if (grabbed)
+    {          
         pos.x = mouse.x - grabbedOffset.x;
         pos.y = mouse.y - grabbedOffset.y;
-        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){
+        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
+        {
             grabbed = false;
             Person::somethingGrabbed = false;
         }
+
+        if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && !beingDestroyed)
+        {
+            beingDestroyed = true;
+        }
     }else{
         
-        if(hovering){
-            if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && !Person::somethingGrabbed){
+        if(hovering)
+        {
+            if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && !Person::somethingGrabbed)
+            {
                 grabbed = true;
                 Person::somethingGrabbed = true;
                 grabbedOffset = {mouse.x - pos.x, mouse.y - pos.y}; // this is so that the object is in the same pos relative to the mouse when grabbed
@@ -90,5 +99,6 @@ void Person::Update(float time, bool hovering) {
             }
         }
     }
+
     
 }   
