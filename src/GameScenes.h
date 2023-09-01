@@ -1,15 +1,30 @@
 #pragma once
+
+#include <vector>
+#include <string>
+#include <string_view>
+
 #include "raylib.h"
 #include "./Scene.h"
-#include <vector>
 #include "./Person.h"
 #include "./Randomiser.h"
 #include "./Bin.h"
+#include "./TextBox.h"
 
 class MenuScene : public Scene
 {
+    TextBox tb;
 public:
-    MenuScene(SceneManager *sm) : Scene(sm) {}
+    MenuScene(SceneManager *sm)
+        : Scene(sm),
+          tb(0.04f, LoadSound("resources/sounds/char.wav"))
+    {}
+    void Init() override
+    {
+        tb.Reset();
+        tb.Play();
+    }
+    
     void Tick(float deltaTime) override
     {
         if (IsKeyPressed(KEY_SPACE)) {
@@ -17,6 +32,7 @@ public:
         }
         BeginDrawing();
         ClearBackground(WHITE);
+        tb.Update();
         DrawText("Please press space to begin", 100, 250, 45, RED);
         EndDrawing();
     }
