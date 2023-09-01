@@ -32,7 +32,7 @@ public:
 private:
     Randomiser r;
     // I'm only keeping this so that we can have multiple sometime
-    // and I believe you were thinking the same as well
+    // and I believe you were thinking the same as well (yes i was)
     std::vector<Person>targetPerson;
 
     float maxStudyTime;
@@ -87,6 +87,7 @@ private:
 
     int crowdNumber = 20;
     int targetIndex;
+
     void Init() override
     {
         Person::somethingGrabbed = false;
@@ -123,13 +124,11 @@ private:
         if (IsKeyPressed(KEY_R)) Init(); // Regenerate crowd
 
         BeginDrawing();
-
         ClearBackground(RAYWHITE);
         // std::cout << persons.size() << std::endl;
         for (auto &person : persons) {
             person.Draw();
         }
-
         // If target in crowd, `crowdNumber - 1` please
         persons[targetIndex].DrawDebug();
 

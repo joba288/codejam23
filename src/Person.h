@@ -23,7 +23,15 @@ public:
 
     bool grabbed = false;
     Vector2 grabbedOffset;
-        
+
+    bool beingDestroyed = false;
+
+    static Shader dissolveShader;
+    static int dissolveTimeLoc;
+    float dissolveTime = 0.6f;
+
+
+
     static bool somethingGrabbed;
     bool IsMouseOver();
         

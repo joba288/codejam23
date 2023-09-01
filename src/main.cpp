@@ -28,6 +28,15 @@ int main(void)
     SetTargetFPS(60);
     srand(time(NULL));
 
+
+    // -------------------------------------------------------------------------------
+    // Shader Loading
+    // -------------------------------------------------------------------------------
+    Person::dissolveShader = LoadShader("resources/shaders/dissolve.vs", "resources/shaders/dissolve.fs");
+    Person::dissolveTimeLoc = GetShaderLocation(Person::dissolveShader, "dissolveTime");
+
+    // -- really could do with a shader manager but its not worth it at this point in the project  
+
     // -------------------------------------------------------------------------------
     // Scene management
     // -------------------------------------------------------------------------------
@@ -44,6 +53,8 @@ int main(void)
     // -------------------------------------------------------------------------------
     while (!WindowShouldClose())
     {
+        
+
         sm.RunScene(GetFrameTime());
     }
 
