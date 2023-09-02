@@ -1,5 +1,5 @@
 #include "./Person.h"
-
+#include "./SoundManager.h"
 
 // -------------------------------------------------------------------------------
 // Globals
@@ -85,7 +85,7 @@ void Person::Update(float time, bool hovering) {
         if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && isTarget && !beingDestroyed)
         {
             beingDestroyed = true;
-            if (dissolveSound) PlaySound(*dissolveSound);
+            SoundManager::Play("dissolve.wav");
         }
     }else{
         

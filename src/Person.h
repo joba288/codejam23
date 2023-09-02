@@ -30,7 +30,6 @@ public:
     static Shader dissolveShader;
     static int dissolveTimeLoc;
     float dissolveTime = 0.4f;
-    inline static Sound *dissolveSound = nullptr;
 
     static bool somethingGrabbed;
     bool IsMouseOver();

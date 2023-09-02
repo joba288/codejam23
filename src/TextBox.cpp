@@ -1,6 +1,7 @@
-#include "TextBox.h"
+#include "./TextBox.h"
+#include "./SoundManager.h"
 
-TextBox::TextBox(float charDelay, Sound charSound) : m_fullText(std::string_view("This is a test of epic proportions")), m_charSound(charSound)
+TextBox::TextBox(float charDelay) : m_fullText(std::string_view("This is a test of epic proportions"))
 {
     m_charDelay = charDelay;
 }
@@ -23,7 +24,7 @@ void TextBox::DrawNext()
     if (m_playing) {
         if (GetTime() >= m_lastTime + m_charDelay) {
             if (m_playing) {
-                PlaySound(m_charSound);
+                SoundManager::Play("char.wav");
             }
             m_index++; m_lastTime = GetTime();
         }

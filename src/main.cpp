@@ -10,6 +10,7 @@
 #include "./Person.h"
 #include "./Scene.h"
 #include "./GameScenes.h"
+#include "./SoundManager.h"
 
 int main(void)
 {
@@ -39,8 +40,11 @@ int main(void)
 
     // -- really could do with a shader manager but its not worth it at this point in the project
 
-    Sound dissolveSound = LoadSound("resources/sounds/dissolve.wav");
-    Person::dissolveSound = &dissolveSound;
+    // -------------------------------------------------------------------------------
+    // SOUND LOADING
+    // -------------------------------------------------------------------------------
+    SoundManager::Load("dissolve.wav");
+    SoundManager::Load("char.wav");
 
     // -------------------------------------------------------------------------------
     // Scene management

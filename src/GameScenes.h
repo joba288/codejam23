@@ -15,9 +15,10 @@ class MenuScene : public Scene
 {
     TextBox tb;
 public:
+    // Initializing members only once, ever
     MenuScene(SceneManager *sm)
         : Scene(sm),
-          tb(0.04f, LoadSound("resources/sounds/char.wav"))
+          tb(0.04f)
     {}
     void Init() override
     {
