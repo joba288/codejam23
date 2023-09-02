@@ -18,7 +18,7 @@ public:
     // Initializing members only once, ever
     MenuScene(SceneManager *sm)
         : Scene(sm),
-          tb(0.04f)
+          tb(0.04f, 100, 100)
     {}
     void Init() override
     {
@@ -29,7 +29,7 @@ public:
     void Tick(float deltaTime) override
     {
         if (IsKeyPressed(KEY_SPACE)) {
-            SwitchScene(1);
+            NextScene();
         }
         BeginDrawing();
         ClearBackground(WHITE);

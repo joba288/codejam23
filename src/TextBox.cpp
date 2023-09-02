@@ -1,14 +1,41 @@
 #include "./TextBox.h"
 #include "./SoundManager.h"
 
-TextBox::TextBox(float charDelay) : m_fullText(std::string_view("This is a test of epic proportions"))
+#include <sstream>
+#include <string>
+
+TextBox::TextBox(float charDelay, int x, int y)
 {
+    m_colour = RED;
     m_charDelay = charDelay;
+    m_lines.push_back(std::string("Forget Jii Not"));
+    m_position[0] = x;
+    m_position[1] = y;
+}
+
+void TextBox::SplitText(std::string_view raw)
+{
+    // If this works, then I just unintentionally  understood std::move
+    std::stringstream stream(std::move(std::string(raw)));
+    std::string to;
+
+    while (std::getline(stream, to)) {
+        m_lines.push_back(to);
+    }
+    // for (auto &i : m_lines) std::cout << i << std::endl;
 }
 
 void TextBox::SetText(const std::string_view text)
 {
+    m_lines.erase(m_lines.begin(), m_lines.end()); m_lines.clear();
+    this->Reset();
     m_fullText = text;
+    SplitText(text);
+}
+
+void TextBox::SetColour(Color colour)
+{
+    m_colour = colour;
 }
 
 void TextBox::Play() { m_playing = true; }
@@ -27,11 +54,20 @@ void TextBox::DrawNext()
                 SoundManager::Play("char.wav");
             }
             m_index++; m_lastTime = GetTime();
+            if (m_index == m_lines[m_line].length()) {
+                m_line++; m_index = 0;
+            }
         }
     }
-    DrawText(
-             m_fullText.substr(0, m_index).c_str(),
-             100, 100, 50, BLUE
-             );
-    if (m_index == m_fullText.length()) Stop();
+    for (size_t i = 0; i < m_lines.size(); i++) {
+        const std::string &line = m_lines.at(i);
+        if (m_line < i) continue;
+        DrawText(
+                 line.substr(0,
+                             i == m_line ? m_index : line.length()
+                             ).c_str(),
+                 m_position[0], m_position[1] + 50 * i, 50, m_colour
+                 );
+    }
+    if (m_line == m_lines.size()) Stop();
 }

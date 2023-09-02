@@ -10,6 +10,7 @@
 #include "./Person.h"
 #include "./Scene.h"
 #include "./GameScenes.h"
+#include "./OpeningScene.h"
 #include "./SoundManager.h"
 
 int main(void)
@@ -42,6 +43,7 @@ int main(void)
 
     // -------------------------------------------------------------------------------
     // SOUND LOADING
+    // Loading++; use `Music` for streaming larger sound files in real-time.
     // -------------------------------------------------------------------------------
     SoundManager::Load("dissolve.wav");
     SoundManager::Load("char.wav");
@@ -50,9 +52,13 @@ int main(void)
     // Scene management
     // -------------------------------------------------------------------------------
     SceneManager sm;
+
+    OpeningScene intro(&sm);
     MenuScene menu(&sm);
     ChooseTargetScene chooseTargetScene(&sm);
     MainScene main(&sm);
+
+    sm.PushScene(&intro);
     sm.PushScene(&menu);
     sm.PushScene(&chooseTargetScene);
     sm.PushScene(&main);

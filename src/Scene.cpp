@@ -52,6 +52,7 @@ void SceneManager::PreviousScene()
 void SceneManager::NextScene()
 {
     m_sceneIndex++;
+    // std::cout << "Scene is now " << m_sceneIndex << std::endl;
     SwitchScene(m_sceneIndex % m_scenes.size()); // Wrap around back to 0 if over size
 }
 
