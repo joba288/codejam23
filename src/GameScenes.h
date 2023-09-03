@@ -49,7 +49,8 @@ class ChooseTargetScene : public Scene
 {
 public:
     inline static PersonGraphics target;
-    ChooseTargetScene(SceneManager *sm) : Scene(sm), infoBox(0.02f, WINDOW_W * 0.425f, WINDOW_H * 0.45f)
+    ChooseTargetScene(SceneManager *sm)
+        : Scene(sm), infoBox(0.02f, WINDOW_W * 0.425f, WINDOW_H * 0.45f), background(LoadTexture("resources/bg_target.png"))
     {
         targetPerson.push_back(Person(Vector2{0.f, 0.f}));
         infoBox.SetText("Your next client requests\n"
@@ -91,8 +92,6 @@ private:
         targetPerson[0] = Person(Vector2{(WINDOW_W-128*3), (150)}, targetGraphics);
         // infoBox.Reset(); // We shouldn't force the player to see + hear this every time!
         infoBox.Play();
-
-        background = LoadTexture("resources/bg_target.png");
     }
 
     void Tick(float deltaTime) override
@@ -133,6 +132,7 @@ public:
 
     inline static size_t score = 0;
     inline static PersonBinnedStatus pbs = PersonBinnedStatus::None;
+    inline static float maxCrowd = 2.f;
 private:
 
     Bin bin;
@@ -147,7 +147,7 @@ private:
     
     int targetIndex;
 
-    float maxCrowd = 2.f;
+
     int crowdNumber;
 
     void Init() override
@@ -286,8 +286,10 @@ private:
     };
 
     TextBox resultsBox;
+    bool gameOver = false;
     void Init() override
     {
+        gameOver = false;
         if (MainScene::pbs == PersonBinnedStatus::BinnedTarget)
             MainScene::score++;
 
@@ -308,8 +310,13 @@ private:
         }else if (MainScene::pbs == PersonBinnedStatus::BinnedWrong){
             msg = negativeMessages[rand() % 10].c_str();
             message = "Elimination Unsuccessful!\n";
+
+            MainScene::maxCrowd = 2.f;
+            gameOver = true;
         }else{
+            MainScene::maxCrowd = 2.f;
             msg = ranOutOfTImeMessages[0].c_str();
+            gameOver = true;
         }
 
         std::string fullMsg = message + std::string(msg) + "\n \nScore " + std::to_string(MainScene::score);
@@ -324,7 +331,13 @@ private:
     {
         UpdateMusicStream(MenuScene::mainTheme);
         if (MainScene::pbs == PersonBinnedStatus::ROOT) SwitchScene(5);
-        if (IsKeyPressed(KEY_SPACE) && !resultsBox.isPlaying()) SwitchScene(2);
+        if (IsKeyPressed(KEY_SPACE) && !resultsBox.isPlaying()) {
+            if (gameOver) {
+                MainScene::score = 0;
+                SwitchScene(5);
+            }
+            else SwitchScene(2);
+        }
         BeginDrawing();
         ClearBackground(BLACK);
         resultsBox.Update();
@@ -348,7 +361,6 @@ public:
         tb.Reset();
         tb.Play();
         tb.Reposition(WINDOW_W/2-MeasureText("Game Over", TEXTBOX_FONT_SIZE)/2, 200);
-        
     }
     
     void Tick(float deltaTime) override
