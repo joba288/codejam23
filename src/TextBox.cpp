@@ -7,6 +7,7 @@
 TextBox::TextBox(float charDelay, int x, int y)
 {
     m_colour = RED;
+    m_colour2 = BLACK;
     m_charDelay = charDelay;
     m_lines.push_back(std::string("Forget Jii Not"));
     m_position[0] = x;
@@ -33,14 +34,30 @@ void TextBox::SetText(const std::string_view text)
     SplitText(text);
 }
 
+void TextBox::ChangeDelay(float newDelay)
+{
+    m_charDelay = newDelay;
+}
+
+void TextBox::Reposition(int x, int y)
+{
+    m_position[0] = x;
+    m_position[1] = y;
+}
+
 void TextBox::SetColour(Color colour)
 {
     m_colour = colour;
 }
 
+void TextBox::SetSecondaryColour(Color colour)
+{
+    m_colour2 = colour;
+}
+
 void TextBox::Play() { m_playing = true; }
 void TextBox::Stop() { m_playing = false; }
-void TextBox::Reset() { m_index = 0; }
+void TextBox::Reset() { m_line = 0; m_index = 0; }
 void TextBox::Update()
 {
     DrawNext();
@@ -66,8 +83,16 @@ void TextBox::DrawNext()
                  line.substr(0,
                              i == m_line ? m_index : line.length()
                              ).c_str(),
-                 m_position[0], m_position[1] + 50 * i, 50, m_colour
+                 m_position[0] + 3, m_position[1] + 3 + 50 * i, TEXTBOX_FONT_SIZE, m_colour2
+                 );
+        DrawText(
+                 line.substr(0,
+                             i == m_line ? m_index : line.length()
+                             ).c_str(),
+                 m_position[0], m_position[1] + 50 * i, TEXTBOX_FONT_SIZE, m_colour
                  );
     }
     if (m_line == m_lines.size()) Stop();
 }
+
+bool TextBox::isPlaying() { return m_playing; }

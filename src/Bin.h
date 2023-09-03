@@ -5,6 +5,7 @@ class Bin
 {
  private:
     Texture2D m_textures[2];
+    Texture2D m_texture;
     bool m_opened = false;
  public:
     Rectangle rect;
@@ -13,4 +14,5 @@ class Bin
     void Draw();
     void Open();
     void Close();
+    bool isOpen();
 };

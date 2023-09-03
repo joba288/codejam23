@@ -5,6 +5,13 @@
 #include <cmath>
 #include <iostream>
 
+enum class PersonBinnedStatus {
+    None,
+    BinnedWrong,
+    BinnedTarget,
+};
+
+
 class Person {
 private:
     
@@ -39,5 +46,5 @@ public:
 
     void Draw();
     void DrawDebug();
-    void Update(float time, bool hovering);
+    PersonBinnedStatus Update(float time, bool hovering, bool binned);
 };

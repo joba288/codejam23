@@ -24,8 +24,8 @@ int main(void)
     // - [ ] Group static window information into small structure
     // - [ ] Un-hard-code all of this information accordingly
     // ...after this, there should be no problem adjusting resolution
-    constexpr int screenWidth = 1080;
-    constexpr int screenHeight = 768;
+    constexpr int screenWidth = 1200;
+    constexpr int screenHeight = 800;
 
     InitWindow(screenWidth, screenHeight, "Memory");
     InitAudioDevice();
@@ -57,11 +57,13 @@ int main(void)
     MenuScene menu(&sm);
     ChooseTargetScene chooseTargetScene(&sm);
     MainScene main(&sm);
+    ResultsScene results(&sm);
 
     sm.PushScene(&intro);
     sm.PushScene(&menu);
     sm.PushScene(&chooseTargetScene);
     sm.PushScene(&main);
+    sm.PushScene(&results);
 
     // -------------------------------------------------------------------------------
     // Main game loop

@@ -55,7 +55,7 @@ bool Person::IsMouseOver()
     return CheckCollisionPointRec(GetMousePosition(), collRec);
 }
 
-void Person::Update(float time, bool hovering) {
+PersonBinnedStatus Person::Update(float time, bool hovering, bool binned) {
 
     // Update collision rectangle
     collRec.x = pos.x - collRec.width/2;
@@ -67,22 +67,22 @@ void Person::Update(float time, bool hovering) {
     // ------------------------------------
     scale += 0.15f * (1.f - (0.1f * (float)hovering) - scale);
 
-    if (!hovering && !Person::somethingGrabbed) return;
+    if (!hovering && !Person::somethingGrabbed) return PersonBinnedStatus::None;
     Vector2 mouse = GetMousePosition();
     // ------------------------------------
     
     //drag and drop code
     if (grabbed)
     {          
-        pos.x = mouse.x - grabbedOffset.x;
-        pos.y = mouse.y - grabbedOffset.y;
+        pos.x += ((mouse.x - grabbedOffset.x) - pos.x) * 0.33f;
+        pos.y += ((mouse.y - grabbedOffset.y) - pos.y) * 0.33f;
         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
         {
             grabbed = false;
             Person::somethingGrabbed = false;
         }
 
-        if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && isTarget && !beingDestroyed)
+        if (binned && IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && !beingDestroyed)
         {
             beingDestroyed = true;
             SoundManager::Play("dissolve.wav");
@@ -101,5 +101,9 @@ void Person::Update(float time, bool hovering) {
         }
     }
 
-    
+    return beingDestroyed ?
+        (isTarget ?
+         PersonBinnedStatus::BinnedTarget
+         : PersonBinnedStatus::BinnedWrong)
+        : PersonBinnedStatus::None;
 }   
