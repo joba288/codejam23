@@ -72,8 +72,8 @@ private:
 
     void Done()
     {
-        if (maxStudyTime > 1.f) maxStudyTime -= 0.1f;
-        else maxStudyTime = 1.f;
+        if (maxStudyTime > 3.f) maxStudyTime -= 0.1f;
+        else maxStudyTime = 3.f;
         NextScene();
     }
 
@@ -134,17 +134,30 @@ private:
     std::vector<Person> persons;
     Person *m_lastHovered = nullptr;
 
-    float m_maxTime = 20.f;
+    float maxSearchTime = 30.f;
+    float m_maxTime;
     float m_timer = m_maxTime;
 
-    int crowdNumber = 20;
+    
     int targetIndex;
+
+    float maxCrowd = 2.f;
+    int crowdNumber;
+
     void Init() override
     {
+        if (maxCrowd < 50.f) maxCrowd += 2.5f;
+        else maxCrowd = 50.f;
+
+        if (maxSearchTime > 10.f) maxSearchTime -= 1.0f;
+        else maxSearchTime = 10.0f;
+
+        m_timer = maxSearchTime;
+
+
         transitioning = false; transitionAlpha = 0;
         Person::somethingGrabbed = false;
-        m_timer = m_maxTime;
-
+        crowdNumber = (int)maxCrowd;
         // -- Generate the crowd --
         persons = createCrowd(crowdNumber);
         
@@ -198,7 +211,7 @@ private:
             person.Draw();
         }
         // If target in crowd, `crowdNumber - 1` please
-        persons[targetIndex].DrawDebug();
+        //persons[targetIndex].DrawDebug();
 
 
         DrawText(TextFormat("%.1f", m_timer), 10, 10, 60, RED);
@@ -262,7 +275,7 @@ private:
     };
 
     inline static std::string ranOutOfTImeMessages[1]{
-        "fuck you"
+        "192.158.1.38"
     };
 
     TextBox resultsBox;
@@ -276,21 +289,26 @@ private:
         //     positiveMessages[rand() % 10].c_str()
         //     : negativeMessages[rand() % 10].c_str();
         
-        const char *msg;       
+        const char *msg;
+        std::string message;       
 
         if (MainScene::pbs == PersonBinnedStatus::BinnedTarget)
         {
             msg = positiveMessages[rand() % 10].c_str();
+            message = "Elimination Successful!\n";
+            
+
         }else if (MainScene::pbs == PersonBinnedStatus::BinnedWrong){
             msg = negativeMessages[rand() % 10].c_str();
+            message = "Elimination Unsuccessful!\n";
         }else{
             msg = ranOutOfTImeMessages[0].c_str();
         }
 
-        std::string fullMsg = std::string(msg) + "\n \nScore " + std::to_string(MainScene::score);
+        std::string fullMsg = message + std::string(msg) + "\n \nScore " + std::to_string(MainScene::score);
         resultsBox.SetText(std::string_view{fullMsg});
         resultsBox.ChangeDelay(0.04f);
-        resultsBox.Reposition(WINDOW_W/2-MeasureText(msg, TEXTBOX_FONT_SIZE)/2, 200);
+        resultsBox.Reposition(WINDOW_W/2-MeasureText(fullMsg.c_str(), TEXTBOX_FONT_SIZE)/2, 200);
         resultsBox.Reset();
         resultsBox.Play();
     }
@@ -321,6 +339,7 @@ public:
     {
         tb.Reset();
         tb.Play();
+        tb.Reposition(WINDOW_W/2-MeasureText("Game Over", TEXTBOX_FONT_SIZE)/2, 200);
         
     }
     
