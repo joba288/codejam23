@@ -87,8 +87,8 @@ public:
           bgs {
               LoadTexture("resources/bg_intro_1.png"),
               LoadTexture("resources/bg_intro_2.png"),
-              LoadTexture("resources/bg_intro_2.png"), // 3
-              LoadTexture("resources/bg_intro_2.png"), // 4
+              LoadTexture("resources/bg_intro_3.png"),
+              LoadTexture("resources/bg_intro_4.png"),
           }
     {
     }
