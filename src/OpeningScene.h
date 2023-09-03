@@ -38,9 +38,12 @@ class OpeningScene : public Scene
     };
     size_t msgIndex = 0;
 
+    Music introMusic = LoadMusicStream("resources/music/intro.wav");
+
     void IncrementText()
     {
         if (!(msgIndex < 4-1)) { // Hard-coded size minus one
+            StopMusicStream(introMusic);
             NextScene();
             return;
         }
@@ -55,12 +58,14 @@ class OpeningScene : public Scene
         box.Reset();
         box.SetText(std::string_view{ msgs[msgIndex] });
         box.Play();
+        PlayMusicStream(introMusic);
     }
 
     static constexpr float maxMsgTimer = 2.0f;
     float msgTimer = maxMsgTimer;
     void Tick(float deltaTime) override
     {
+        UpdateMusicStream(introMusic);
         BeginDrawing();
         DrawTexture(bgs[msgIndex], 0, 0, WHITE);
 

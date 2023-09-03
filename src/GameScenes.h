@@ -16,19 +16,24 @@ class MenuScene : public Scene
 {
     TextBox tb;
 public:
+    inline static Music mainTheme;
     // Initializing members only once, ever
     MenuScene(SceneManager *sm)
         : Scene(sm),
           tb(0.04f, 100, 100)
-    {}
+    {
+        mainTheme = LoadMusicStream("resources/music/finder.wav");
+    }
     void Init() override
     {
         tb.Reset();
         tb.Play();
+        PlayMusicStream(MenuScene::mainTheme);
     }
     
     void Tick(float deltaTime) override
     {
+        UpdateMusicStream(MenuScene::mainTheme);
         if (IsKeyPressed(KEY_SPACE)) {
             NextScene();
         }
@@ -92,6 +97,7 @@ private:
 
     void Tick(float deltaTime) override
     {
+        UpdateMusicStream(MenuScene::mainTheme);
         if (timeRemaining <= 0.f || IsKeyPressed(KEY_SPACE) && !infoBox.isPlaying()) Done();
         
         BeginDrawing();
@@ -168,6 +174,7 @@ private:
 
     void Tick(float deltaTime) override
     {
+        UpdateMusicStream(MenuScene::mainTheme);
         m_lastHovered = nullptr;
 
         // -- Our Layering Problems are Over -- (yay !!)
@@ -296,7 +303,8 @@ private:
     }
 
     void Tick(float deltaTime) override
-    {   
+    {
+        UpdateMusicStream(MenuScene::mainTheme);
         if (MainScene::pbs == PersonBinnedStatus::ROOT) SwitchScene(5);
         if (IsKeyPressed(KEY_SPACE) && !resultsBox.isPlaying()) SwitchScene(2);
         BeginDrawing();
@@ -326,6 +334,7 @@ public:
     
     void Tick(float deltaTime) override
     {
+        UpdateMusicStream(MenuScene::mainTheme);
         if (IsKeyPressed(KEY_SPACE)) {
             SwitchScene(1);
         }
