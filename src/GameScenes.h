@@ -84,7 +84,7 @@ private:
         PersonGraphics targetGraphics = Randomiser::CreateRandomPerson();
         ChooseTargetScene::target = targetGraphics;
         targetPerson[0] = Person(Vector2{(WINDOW_W-128*3), (150)}, targetGraphics);
-        infoBox.Reset();
+        // infoBox.Reset(); // We shouldn't force the player to see + hear this every time!
         infoBox.Play();
 
         background = LoadTexture("resources/bg_target.png");
