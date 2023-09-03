@@ -212,7 +212,7 @@ private:
         // Timer things
         if (transitioning) return;
         m_timer -= deltaTime;
-        if (m_timer <= 0.f) { SwitchScene(0); }
+        if (m_timer <= 0.f) { pbs = PersonBinnedStatus::ROOT; NextScene();}
     }
 
     std::vector<Person> createCrowd(int amount){
@@ -261,16 +261,31 @@ private:
         "Something's wrong; I still hate them.",
     };
 
+    inline static std::string ranOutOfTImeMessages[1]{
+        "fuck you"
+    };
+
     TextBox resultsBox;
     void Init() override
     {
         if (MainScene::pbs == PersonBinnedStatus::BinnedTarget)
             MainScene::score++;
 
-        const char *msg =
-            MainScene::pbs == PersonBinnedStatus::BinnedTarget ?
-            positiveMessages[rand() % 10].c_str()
-            : negativeMessages[rand() % 10].c_str();
+        // const char *msg =
+        //     MainScene::pbs == PersonBinnedStatus::BinnedTarget ?
+        //     positiveMessages[rand() % 10].c_str()
+        //     : negativeMessages[rand() % 10].c_str();
+        
+        const char *msg;       
+
+        if (MainScene::pbs == PersonBinnedStatus::BinnedTarget)
+        {
+            msg = positiveMessages[rand() % 10].c_str();
+        }else if (MainScene::pbs == PersonBinnedStatus::BinnedWrong){
+            msg = negativeMessages[rand() % 10].c_str();
+        }else{
+            msg = ranOutOfTImeMessages[0].c_str();
+        }
 
         std::string fullMsg = std::string(msg) + "\n \nScore " + std::to_string(MainScene::score);
         resultsBox.SetText(std::string_view{fullMsg});
@@ -281,12 +296,42 @@ private:
     }
 
     void Tick(float deltaTime) override
-    {
+    {   
+        if (MainScene::pbs == PersonBinnedStatus::ROOT) SwitchScene(5);
         if (IsKeyPressed(KEY_SPACE) && !resultsBox.isPlaying()) SwitchScene(2);
         BeginDrawing();
         ClearBackground(BLACK);
         resultsBox.Update();
         if (IsKeyPressed(KEY_SPACE)) resultsBox.ChangeDelay(0.005f);
+        EndDrawing();
+    }
+};
+
+
+class GameOverScene : public Scene
+{
+    TextBox tb;
+public:
+    // Initializing members only once, ever
+    GameOverScene(SceneManager *sm)
+        : Scene(sm),
+          tb(0.04f, 200, 200)
+    {tb.SetText(std::string_view{"Game Over"});}
+    void Init() override
+    {
+        tb.Reset();
+        tb.Play();
+        
+    }
+    
+    void Tick(float deltaTime) override
+    {
+        if (IsKeyPressed(KEY_SPACE)) {
+            SwitchScene(1);
+        }
+        BeginDrawing();
+        ClearBackground(WHITE);
+        tb.Update();
         EndDrawing();
     }
 };

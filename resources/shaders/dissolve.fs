@@ -84,8 +84,8 @@ void main()
 
     float t = dissolveTime;
     vec4 clrBG = vec4(0.0);
-    float edge_width_start = 0.5;
-    float edge_width_end = 0.15;
+    float edge_width_start = 0.15;
+    float edge_width_end = 0.05;
     float edge_width = mix(edge_width_start, edge_width_end, smoothstep(0., 1., t));
     float myAlpha = mix(0. - edge_width, 1., t); 
     vec2 uv_mask = fragTexCoord.xy;

@@ -9,6 +9,7 @@ enum class PersonBinnedStatus {
     None,
     BinnedWrong,
     BinnedTarget,
+    ROOT,
 };
 
 
