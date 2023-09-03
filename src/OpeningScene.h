@@ -23,8 +23,8 @@ class OpeningScene : public Scene
             "a era of disagreement for\n"
             "the poor Jiis...",
 
-            "Thus, a new dystopian future\n"
-            "was established in what used to\n"
+            "Thus, the new dystopian future\n"
+            "was realised in what used to\n"
             "be the simple, happy Jiiverse.\n \n"
             "Everyone was upset with\n"
             "everyone else.",
