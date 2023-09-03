@@ -58,12 +58,14 @@ int main(void)
     ChooseTargetScene chooseTargetScene(&sm);
     MainScene main(&sm);
     ResultsScene results(&sm);
+    GameOverScene gameOver(&sm);
 
     sm.PushScene(&intro);
     sm.PushScene(&menu);
     sm.PushScene(&chooseTargetScene);
     sm.PushScene(&main);
     sm.PushScene(&results);
+    sm.PushScene(&gameOver);
 
     // -------------------------------------------------------------------------------
     // Main game loop
